@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我是網頁的標題</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      // 從 CDN 引入 THREE.js
+      import * as THREE from 'https://cdn.skypack.dev/three@0.130.0';
+
+      // 從 CDN 引入 OrbitControls.js
+      import { OrbitControls } from 'https://cdn.skypack.dev/three@0.130.0/examples/jsm/controls/OrbitControls.js';
+
+      // 建立場景
+      const scene = new THREE.Scene();
+
+      // 建立相機
+      // new THREE.PerspectiveCamera(fov, aspect, near, far)
+      //  fov: Number - 視野角度
+      //  aspect: Number - 長寬比
+      //  near: Number - 距離相機多近的物體會被渲染
+      //  far: Number - 距離相機多遠的物體會被渲染
+      let camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100,
+      );
+
+      // 建立渲染器
+      const renderer = new THREE.WebGLRenderer();
+      // 設定渲染器的大小
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      // 將渲染器的 DOM 元素加入到 body 中
+      document.body.appendChild(renderer.domElement);
+
+      // 建立控制器
+      const controls = new OrbitControls(camera, renderer.domElement);
+
+      // 建立幾何體
+      const geometry = new THREE.SphereGeometry(1, 32, 32);
+      // 建立材質
+      const textureLoader = new THREE.TextureLoader();
+      // 建立貼圖
+      const texture = textureLoader.load('world-map-borders.png');
+      // 建立材質
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+      });
+
+      // 建立網格
+      const sphere = new THREE.Mesh(geometry, material);
+      // 將網格加入到場景中
+      scene.add(sphere);
+
+      // 設定相機的位置
+      camera.position.z = 2;
+
+      // 建立動畫
+      function animate() {
+        // 呼叫 animate 函式
+        requestAnimationFrame(animate);
+        // 更新控制器
+        controls.update();
+        // 渲染場景和相機
+        renderer.render(scene, camera);
+      }
+
+      // 呼叫 animate 函式
+      animate();
+    </script>
+  </body>
+</html>
